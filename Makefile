@@ -11,7 +11,7 @@ lock:
 	@python3 -m pip install -q poetry
 	@poetry lock
 
-tests:
+test:
 	@echo "Starting the tests process..."
 	@poetry install --with dev
 	@poetry run pytest --cov=formula_1_etl/ --cov-fail-under=70
