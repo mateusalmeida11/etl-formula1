@@ -54,3 +54,16 @@ def test_erro_timeout(mock_get):
     assert e.status_code is None
     assert "Erro Devido a Timeout" == e.response_body
     assert e.endpoint == endpoint
+
+
+@patch("formula_1_etl.utils.get_api.requests.Session.get")
+def test_erro_generico(mock_get):
+    mock_get.raise_for_status.side_effect = RequestError
+    endpoint = "2025/races"
+    with pytest.raises(RequestError) as excinfo:
+        request_url(endpoint=endpoint)
+
+    e = excinfo
+    assert e.status_code is None
+    assert "Erro Generico Request" == e.response_body
+    assert e.endpoin == endpoint
