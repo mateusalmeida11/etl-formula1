@@ -38,3 +38,4 @@ def test_status_404_error_rout_endpoint(mock_get):
     e = excinfo.value
     assert e.status_code == 404
     assert "The requested resource was not found on this server" in e.response_body
+    assert e.endpoint == endpoint
