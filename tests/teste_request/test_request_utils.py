@@ -44,13 +44,13 @@ def test_status_404_error_rout_endpoint(mock_get):
 @patch("formula_1_etl.utils.get_api.requests.Session.get")
 def test_erro_timeout(mock_get):
     mock_response = MagicMock()
-    mock_response.raise_for_status.side_effect = Timeout
+    mock_response.raise_for_status.side_effect = Timeout(response=mock_response)
     mock_get.return_value = mock_response
-    endpoint = "2025321/races"
-    with pytest.raises(Timeout) as excinfo:
+    endpoint = "2025/races"
+    with pytest.raises(RequestError) as excinfo:
         request_url(endpoint=endpoint)
 
     e = excinfo.value
     assert e.status_code is None
-    assert "Erro Devido a Timeout" in e.response_body
+    assert "Erro Devido a Timeout" == e.response_body
     assert e.endpoint == endpoint
