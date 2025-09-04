@@ -9,3 +9,11 @@ def test_status_200_request_api(mock_get):
     url = "https://api.jolpi.ca/ergast/f1/2025/races"
     response = request_url(url=url)
     assert response.status_code == 200
+
+
+@patch("formula_1_etl.utils.get_api.requests.Session.get")
+def test_status_404_error_rout_endpoint(mock_get):
+    mock_get.return_value.status_code = 404
+    url = "https://api.jolpi.ca123/ergast/f1/2025/races"
+    response = request_url(url=url)
+    assert response.status_code == 404
