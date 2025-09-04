@@ -35,3 +35,7 @@ def request_url(endpoint):
             endpoint=endpoint,
             response_body=e.response.text,
         ) from e
+    except requests.exceptions.Timeout as e:
+        raise RequestError(
+            "Erro Timeout", endpoint=endpoint, response_body="Erro Devido a Timeout"
+        ) from e
