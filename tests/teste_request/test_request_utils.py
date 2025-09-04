@@ -9,8 +9,8 @@ from formula_1_etl.utils.get_api import RequestError, request_url
 @patch("formula_1_etl.utils.get_api.requests.Session.get")
 def test_status_200_request_api(mock_get):
     mock_get.return_value.status_code = 200
-    url = "https://api.jolpi.ca/ergast/f1/2025/races"
-    response = request_url(url=url)
+    endpoint = "2025/races"
+    response = request_url(endpoint=endpoint)
     assert response.status_code == 200
 
 
@@ -31,9 +31,10 @@ def test_status_404_error_rout_endpoint(mock_get):
     """
     mock_response.raise_for_status.side_effect = HTTPError(response=mock_response)
     mock_get.return_value = mock_response
-    url = "https://api.jolpi.ca123/ergast/f1/2025/races"
+    endpoint = "2025321/races"
     with pytest.raises(RequestError) as excinfo:
-        request_url(url=url)
+        request_url(endpoint=endpoint)
 
     e = excinfo.value
     assert e.status_code == 404
+    assert "The requested resource was not found on this server" in e.response_body
