@@ -4,9 +4,10 @@ from urllib3.util.retry import Retry
 
 
 class RequestError(Exception):
-    def __init__(self, message, status_code=None, response_body=None):
+    def __init__(self, message, status_code=None, endpoint=None, response_body=None):
         super().__init__(message)
         self.status_code = status_code
+        self.endpoint = endpoint
         self.response_body = response_body
 
 
@@ -31,5 +32,6 @@ def request_url(endpoint):
         raise RequestError(
             f"HTTP Error {e.response.status_code}",
             status_code=e.response.status_code,
+            endpoint=endpoint,
             response_body=e.response.text,
         ) from e
