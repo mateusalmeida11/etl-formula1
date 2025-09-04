@@ -39,3 +39,9 @@ def request_url(endpoint):
         raise RequestError(
             "Erro Timeout", endpoint=endpoint, response_body="Erro Devido a Timeout"
         ) from e
+    except requests.exceptions.RequestException as e:
+        raise RequestError(
+            "Erro Generico Request",
+            endpoint=endpoint,
+            response_body="Erro Generico Request",
+        ) from e
