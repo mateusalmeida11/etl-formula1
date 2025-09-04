@@ -3,6 +3,13 @@ from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 
 
+class RequestError(Exception):
+    def __init__(self, message, status_code=None, response_body=None):
+        super().__init__(message)
+        self.status_code = status_code
+        self.response_body = response_body
+
+
 def request_url(url):
     retry_strategy = Retry(
         total=3,
@@ -14,5 +21,13 @@ def request_url(url):
     http = requests.Session()
     http.mount("https://", adapter)
     http.mount("http://", adapter)
-    response = http.get(url=url)
-    return response
+    try:
+        response = http.get(url=url)
+        response.raise_for_status()
+        return response
+    except requests.exceptions.HTTPError as e:
+        raise RequestError(
+            f"HTTP Error {e.response.status_code}",
+            status_code=e.response.status_code,
+            response_body=e.response.text,
+        ) from e
