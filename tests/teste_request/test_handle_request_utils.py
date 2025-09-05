@@ -1,9 +1,9 @@
 from unittest.mock import MagicMock, patch
 
-from formula_1_etl.utils.handle_request import handle_request
+from formula_1_etl.utils.handle_request import handle_requests
 
 
-@patch("formula_1_etl.utils.get_api.request.Session.get")
+@patch("formula_1_etl.utils.get_api.requests.Session.get")
 def test_retorno_da_lista_maior_que_zero(mock_get):
     mock_response = MagicMock()
     mock_response.status_code = 200
@@ -30,5 +30,5 @@ def test_retorno_da_lista_maior_que_zero(mock_get):
     }
     mock_get.return_value = mock_response
     endpoint = "/seasons"
-    data = handle_request(endpoint=endpoint)
+    data = handle_requests(endpoint=endpoint)
     assert len(data) > 0
