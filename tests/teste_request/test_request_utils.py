@@ -5,6 +5,11 @@ from requests.exceptions import HTTPError, RequestException, Timeout
 
 from formula_1_etl.utils.get_api import RequestError, request_url
 
+offset = 0
+limit = 100
+
+params = {"offset": offset, "limit": limit}
+
 
 @patch("formula_1_etl.utils.get_api.requests.Session.get")
 def test_status_200_request_api(mock_get):
@@ -30,7 +35,7 @@ def test_status_200_request_api(mock_get):
 
     mock_get.return_value = mock_response
     endpoint = "2025/races"
-    response = request_url(endpoint=endpoint)
+    response = request_url(endpoint=endpoint, params=params)
     assert response.status_code == 200
     assert response.headers["Content-Type"] == "application/json"
 
@@ -54,7 +59,7 @@ def test_status_404_error_rout_endpoint(mock_get):
     mock_get.return_value = mock_response
     endpoint = "2025321/races"
     with pytest.raises(RequestError) as excinfo:
-        request_url(endpoint=endpoint)
+        request_url(endpoint=endpoint, params=params)
 
     e = excinfo.value
     assert e.status_code == 404
@@ -69,7 +74,7 @@ def test_erro_timeout(mock_get):
     mock_get.return_value = mock_response
     endpoint = "2025/races"
     with pytest.raises(RequestError) as excinfo:
-        request_url(endpoint=endpoint)
+        request_url(endpoint=endpoint, params=params)
 
     e = excinfo.value
     assert e.status_code is None
@@ -86,7 +91,7 @@ def test_erro_generico(mock_get):
     mock_get.return_value = mock_response
     endpoint = "2025/races"
     with pytest.raises(RequestError) as excinfo:
-        request_url(endpoint=endpoint)
+        request_url(endpoint=endpoint, params=params)
 
     e = excinfo.value
     assert e.status_code is None
