@@ -1,10 +1,9 @@
 from formula_1_etl.utils.get_api import request_url
 
 
-def handle_requests(endpoint):
+def handle_requests(endpoint, limit=100):
     total = float("inf")
     offset = 0
-    limit = 100
 
     params = {"offset": offset, "limit": limit}
 
