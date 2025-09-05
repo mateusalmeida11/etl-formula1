@@ -8,10 +8,31 @@ from formula_1_etl.utils.get_api import RequestError, request_url
 
 @patch("formula_1_etl.utils.get_api.requests.Session.get")
 def test_status_200_request_api(mock_get):
-    mock_get.return_value.status_code = 200
+    mock_response = MagicMock()
+    mock_response.status_code = 200
+    mock_response.headers = {
+        "Server": "nginx/1.28.0",
+        "Date": "Fri, 05 Sep 2025 16:16:59 GMT",
+        "Content-Type": "application/json",
+        "Transfer-Encoding": "chunked",
+        "Connection": "keep-alive",
+        "Vary": "Accept, origin",
+        "Allow": "GET, HEAD, OPTIONS",
+        "Expires": "Fri, 05 Sep 2025 16:30:04 GMT",
+        "Cache-Control": "max-age=3600",
+        "Age": "2815",
+        "X-Frame-Options": "DENY",
+        "X-Content-Type-Options": "nosniff",
+        "Referrer-Policy": "same-origin",
+        "Cross-Origin-Opener-Policy": "same-origin",
+        "Content-Encoding": "gzip",
+    }
+
+    mock_get.return_value = mock_response
     endpoint = "2025/races"
     response = request_url(endpoint=endpoint)
     assert response.status_code == 200
+    assert response.headers["Content-Type"] == "application/json"
 
 
 @patch("formula_1_etl.utils.get_api.requests.Session.get")
