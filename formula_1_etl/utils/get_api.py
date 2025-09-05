@@ -11,7 +11,7 @@ class RequestError(Exception):
         self.response_body = response_body
 
 
-def request_url(endpoint):
+def request_url(endpoint, params):
     retry_strategy = Retry(
         total=3,
         status_forcelist=[408, 429, 500, 502, 503, 504],
@@ -25,7 +25,7 @@ def request_url(endpoint):
     http.mount("https://", adapter)
     http.mount("http://", adapter)
     try:
-        response = http.get(url=url)
+        response = http.get(url=url, params=params)
         response.raise_for_status()
         return response
     except requests.exceptions.HTTPError as e:
