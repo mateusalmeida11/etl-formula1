@@ -8,12 +8,14 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "^3.12"
 requests = "^2.32.5"
+boto3 = "^1.40.25"
 
 
 [tool.poetry.group.dev.dependencies]
 pre-commit = "^4.3.0"
 pytest = "^8.4.1"
 pytest-cov = "^6.2.1"
+moto = "^5.1.11"
 
 [build-system]
 requires = ["poetry-core"]
