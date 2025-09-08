@@ -33,12 +33,13 @@ def test_success_upload_s3_bucket_process_complete(mock_get):
     }
 
     mock_get.return_value = mock_response
-    event = {"endpoint": "2025/races"}
-    context = {}
 
     bucket_name = "etl-formula-1"
     client = boto3.client("s3", region_name="us-east-1")
     client.create_bucket(Bucket=bucket_name)
+
+    event = {"endpoint": "2025/races", "bucket_name": bucket_name, "layer_name": "raw"}
+    context = {}
 
     result = lambda_handler(event=event, context=context)
     assert result["status"] == "success"
