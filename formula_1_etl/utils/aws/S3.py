@@ -4,6 +4,13 @@ import boto3
 from botocore.exceptions import ClientError
 
 
+class S3UploadError(Exception):
+    def __init__(self, message, status_code=None):
+        super().__init__(message)
+        self.message = message
+        self.status_code = status_code
+
+
 class S3:
     def __init__(self, bucket_name):
         self.s3_client = boto3.client(
@@ -24,4 +31,7 @@ class S3:
             )
             return response
         except ClientError as e:
-            return e
+            raise S3UploadError(
+                e.response["Error"]["Message"],
+                status_code=e.response["ResponseMetadata"]["HTTPStatusCode"],
+            ) from e
