@@ -3,11 +3,11 @@ from unittest.mock import MagicMock, patch
 import boto3
 from moto import mock_aws
 
-from formula_1_etl.layers.layer_raw import lambda_handler
+from formula_1_etl.layers.layer_raw.handler_request_api import lambda_handler
 
 
 @mock_aws
-@patch("fomrula_1_etl.utils.get_api.requests.Session.get")
+@patch("formula_1_etl.utils.get_api.requests.Session.get")
 def test_success_upload_s3_bucket_process_complete(mock_get):
     mock_response = MagicMock()
     mock_response.status_code = 200
