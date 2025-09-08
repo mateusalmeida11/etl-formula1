@@ -15,6 +15,6 @@ class S3:
 
     def upload_file(self, data, key):
         response = self.s3_client.put_object(
-            Body=data, Key=key, Bucket=self.bucket_name, ContentyType="application/json"
+            Body=data, Key=key, Bucket=self.bucket_name, ContentType="application/json"
         )
         return response
