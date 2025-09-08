@@ -1,9 +1,10 @@
 import json
 
 import boto3
+import pytest
 from moto import mock_aws
 
-from formula_1_etl.utils.aws.S3 import S3
+from formula_1_etl.utils.aws.S3 import S3, S3UploadError
 
 
 @mock_aws
@@ -67,11 +68,11 @@ def test_upload_s3_bucket_inexistente():
         }
     }
     json_data = json.dumps(body, indent=4)
-    s3 = S3(bucket_name=bucket_name)
-    response = s3.upload_file(data=json_data, key=key)
 
-    error = response.response
-    status_code = error["ResponseMetadata"]["HTTPStatusCode"]
-    message = error["Error"]["Message"]
-    assert status_code == 404
-    assert message == "The specified bucket does not exist"
+    with pytest.raises(S3UploadError) as excinfo:
+        s3 = S3(bucket_name=bucket_name)
+        s3.upload_file(data=json_data, key=key)
+
+    e = excinfo.value
+    assert e.status_code == 404
+    assert e.message == "The specified bucket does not exist"
