@@ -1,6 +1,7 @@
 import os
 
 import boto3
+from botocore.exceptions import ClientError
 
 
 class S3:
@@ -14,7 +15,13 @@ class S3:
         self.bucket_name = bucket_name
 
     def upload_file(self, data, key):
-        response = self.s3_client.put_object(
-            Body=data, Key=key, Bucket=self.bucket_name, ContentType="application/json"
-        )
-        return response
+        try:
+            response = self.s3_client.put_object(
+                Body=data,
+                Key=key,
+                Bucket=self.bucket_name,
+                ContentType="application/json",
+            )
+            return response
+        except ClientError as e:
+            return e
