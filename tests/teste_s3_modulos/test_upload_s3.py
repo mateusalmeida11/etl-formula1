@@ -71,5 +71,7 @@ def test_upload_s3_bucket_inexistente():
     response = s3.upload_file(data=json_data, key=key)
 
     error = response.response
-    status_code = error["HTTPStatusCode"]
+    status_code = error["ResponseMetadata"]["HTTPStatusCode"]
+    message = error["Error"]["Message"]
     assert status_code == 404
+    assert message == "The specified bucket does not exist"
