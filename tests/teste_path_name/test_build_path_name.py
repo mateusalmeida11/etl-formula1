@@ -5,14 +5,14 @@ from formula_1_etl.utils.create_name_files import create_root_path
 
 def test_root_path_name_layers():
     layer = "bronze"
-    endpoint = "races"
+    category = "races"
     today = datetime.today()
     year = today.year
     month = today.month
     day = today.day
 
-    result = create_root_path(layer_name=layer, endpoint=endpoint)
+    result = create_root_path(layer_name=layer, category=category)
 
-    expected = f"{layer}/{endpoint}/{year}/{month}/{day}"
+    expected = f"{layer}/{category}/year={year}/month={month}/day={day}"
 
     assert expected == result
