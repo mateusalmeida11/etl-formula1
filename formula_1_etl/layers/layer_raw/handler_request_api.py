@@ -50,3 +50,10 @@ def lambda_handler(event, context):
             "bucket": bucket_name,
             "key": key,
         }
+    except Exception as e:
+        return {
+            "status": "error",
+            "type": "LambdaError",
+            "status_code": 500,
+            "message": f"Erro Inesperado: {str(e)}",
+        }
