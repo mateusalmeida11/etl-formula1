@@ -138,3 +138,34 @@ def test_fail_upload_s3(mock_get):
     assert response["bucket"] == bucket_name
     assert response["message"] == "The specified bucket does not exist"
     assert response["key"] == "raw/races/year=2025/month=9/day=10/races.json"
+
+
+@mock_aws
+@patch("formula_1_etl.utils.get_api.requests.Session.get")
+@patch("formula_1_etl.layers.layer_raw.handler_request_api.lambda_handler")
+def test_fail_generic_error(mock_get, mock_handle):
+    mock_response = MagicMock()
+    mock_response.status_code = 200
+    mock_get.retunr_value = mock_response
+
+    bucket_name = "etl-formula-1"
+    boto3.client("s3", region_name="us-east-1")
+
+    mock_json = MagicMock()
+    mock_json.side_effect = Exception("Erro Inesperado Json")
+    mock_handle.return_value = mock_json
+
+    event = {
+        "category": "races",
+        "bucket_name": bucket_name,
+        "layer_name": "raw",
+        "season": "2025",
+    }
+
+    context = {}
+    response = lambda_handler(event=event, context=context)
+
+    assert response["status"] == "error"
+    assert response["type"] == "LambdaError"
+    assert response["status_code"] == 500
+    assert "Erro Inesperado" in response["message"]
