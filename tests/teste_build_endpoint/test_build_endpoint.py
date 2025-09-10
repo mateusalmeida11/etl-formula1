@@ -12,3 +12,11 @@ def test_build_endpoint_category_season():
     season = "2025"
     endpoint = build_endpoint(category=category, season=season)
     assert "2025/seasons" == endpoint
+
+
+def test_build_endpoint_category_season_rounds():
+    category = "seasons"
+    season = "2025"
+    rounds = "1"
+    endpoint = build_endpoint(category=category, season=season, rounds=rounds)
+    assert "2025/1/seasons" == endpoint
