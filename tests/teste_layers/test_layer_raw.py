@@ -43,7 +43,7 @@ def test_success_upload_s3_bucket_process_complete(mock_get):
         "category": "races",
         "bucket_name": bucket_name,
         "layer_name": "raw",
-        "season": 2025,
+        "season": "2025",
     }
     context = {}
 
@@ -80,7 +80,7 @@ def test_fail_request_error_raw(mock_get):
         "category": "races",
         "bucket_name": bucket_name,
         "layer_name": "raw",
-        "season": 2025,
+        "season": "2025",
     }
     context = {}
 
@@ -126,8 +126,9 @@ def test_fail_upload_s3(mock_get):
         "category": "races",
         "bucket_name": bucket_name,
         "layer_name": "raw",
-        "season": 2025,
+        "season": "2025",
     }
+
     context = {}
     response = lambda_handler(event=event, context=context)
 
