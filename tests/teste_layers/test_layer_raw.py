@@ -1,12 +1,10 @@
 from unittest.mock import MagicMock, patch
 
 import boto3
-import pytest
 from moto import mock_aws
 from requests.exceptions import HTTPError
 
 from formula_1_etl.layers.layer_raw.handler_request_api import lambda_handler
-from formula_1_etl.utils.get_api import RequestError
 
 
 @mock_aws
@@ -76,12 +74,9 @@ def test_fail_request_error_raw(mock_get):
     event = {"endpoint": "2025/races", "bucket_name": bucket_name, "layer_name": "raw"}
     context = {}
 
-    with pytest.raises(RequestError) as excinfo:
-        lambda_handler(event=event, context=context)
+    response = lambda_handler(event=event, context=context)
 
-    e = excinfo.value
-
-    assert e.status == "error"
-    assert e.type == "APIError"
-    assert e.status_code == 404
-    assert e.endpoint == "2025/races"
+    assert response["status"] == "error"
+    assert response["type"] == "APIError"
+    assert response["status_code"] == 404
+    assert response["endpoint"] == "2025/races"
