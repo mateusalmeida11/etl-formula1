@@ -1,6 +1,7 @@
 import json
 
 from formula_1_etl.utils.aws.S3 import S3
+from formula_1_etl.utils.build_endpoint import build_endpoint
 from formula_1_etl.utils.create_name_files import create_root_path
 from formula_1_etl.utils.get_api import RequestError
 from formula_1_etl.utils.handle_request import handle_requests
@@ -8,11 +9,14 @@ from formula_1_etl.utils.handle_request import handle_requests
 
 def lambda_handler(event, context):
     try:
-        endpoint = event.get("endpoint")
+        category = event.get("category")
+        season = event.get("season")
+        rounds = event.get("rounds")
         bucket_name = event.get("bucket_name")
         layer_name = event.get("layer_name")
 
-        key = create_root_path(layer_name=layer_name, endpoint=endpoint)
+        key = create_root_path(layer_name=layer_name, category=category)
+        endpoint = build_endpoint(category=category, season=season, rounds=rounds)
 
         data = handle_requests(endpoint=endpoint)
 
