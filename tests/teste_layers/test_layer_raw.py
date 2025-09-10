@@ -1,9 +1,12 @@
 from unittest.mock import MagicMock, patch
 
 import boto3
+import pytest
 from moto import mock_aws
+from requests.exceptions import HTTPError
 
 from formula_1_etl.layers.layer_raw.handler_request_api import lambda_handler
+from formula_1_etl.utils.get_api import RequestError
 
 
 @mock_aws
@@ -45,3 +48,40 @@ def test_success_upload_s3_bucket_process_complete(mock_get):
     assert result["status"] == "success"
     assert result["bucket"] == bucket_name
     assert result["s3_response"]["status_code"] == 200
+
+
+@mock_aws
+@patch("formula_1_etl.utils.get_api.requests.Session.get")
+def test_fail_request_error_raw(mock_get):
+    mock_response = MagicMock()
+    mock_response.status_code = 404
+    mock_response.text = """
+    <!doctype html>
+    <html lang="en">
+    <head>
+      <title>Not Found</title>
+    </head>
+    <body>
+      <h1>Not Found</h1><p>The requested resource was not found on this server.</p>
+    </body>
+    </html>
+    """
+    mock_response.raise_for_status.side_effect = HTTPError(response=mock_response)
+    mock_get.return_value = mock_response
+
+    bucket_name = "etl-formula-1"
+    client = boto3.client("s3", region_name="us-east-1")
+    client.create_bucket(Bucket=bucket_name)
+
+    event = {"endpoint": "2025/races", "bucket_name": bucket_name, "layer_name": "raw"}
+    context = {}
+
+    with pytest.raises(RequestError) as excinfo:
+        lambda_handler(event=event, context=context)
+
+    e = excinfo.value
+
+    assert e.status == "error"
+    assert e.type == "APIError"
+    assert e.status_code == 404
+    assert e.endpoint == "2025/races"
