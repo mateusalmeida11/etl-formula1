@@ -15,7 +15,8 @@ def lambda_handler(event, context):
         bucket_name = event.get("bucket_name")
         layer_name = event.get("layer_name")
 
-        key = create_root_path(layer_name=layer_name, category=category)
+        root_path = create_root_path(layer_name=layer_name, category=category)
+        key = f"{root_path}/{category}.json"
         endpoint = build_endpoint(category=category, season=season, rounds=rounds)
 
         data = handle_requests(endpoint=endpoint)
