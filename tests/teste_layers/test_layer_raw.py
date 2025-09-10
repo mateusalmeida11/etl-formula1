@@ -136,3 +136,4 @@ def test_fail_upload_s3(mock_get):
     assert response["type"] == "S3UploadError"
     assert response["status_code"] == 404
     assert response["bucket"] == bucket_name
+    assert response["message"] == "The specified bucket does not exist"
