@@ -1,6 +1,6 @@
 import json
 
-from formula_1_etl.utils.aws.S3 import S3
+from formula_1_etl.utils.aws.S3 import S3, S3UploadError
 from formula_1_etl.utils.build_endpoint import build_endpoint
 from formula_1_etl.utils.create_name_files import create_root_path
 from formula_1_etl.utils.get_api import RequestError
@@ -39,4 +39,13 @@ def lambda_handler(event, context):
             "status_code": e.status_code or 500,
             "message": str(e),
             "endpoint": endpoint,
+        }
+    except S3UploadError as e:
+        return {
+            "status": "error",
+            "type": "S3UploadError",
+            "status_code": e.status_code,
+            "message": str(e.message),
+            "bucket": bucket_name,
+            "key": key,
         }
