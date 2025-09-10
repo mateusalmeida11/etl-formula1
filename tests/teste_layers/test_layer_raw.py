@@ -43,3 +43,5 @@ def test_success_upload_s3_bucket_process_complete(mock_get):
 
     result = lambda_handler(event=event, context=context)
     assert result["status"] == "success"
+    assert result["bucket"] == bucket_name
+    assert result["s3_response"]["status_code"] == 200
