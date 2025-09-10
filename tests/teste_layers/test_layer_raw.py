@@ -39,7 +39,12 @@ def test_success_upload_s3_bucket_process_complete(mock_get):
     client = boto3.client("s3", region_name="us-east-1")
     client.create_bucket(Bucket=bucket_name)
 
-    event = {"endpoint": "2025/races", "bucket_name": bucket_name, "layer_name": "raw"}
+    event = {
+        "category": "races",
+        "bucket_name": bucket_name,
+        "layer_name": "raw",
+        "season": 2025,
+    }
     context = {}
 
     result = lambda_handler(event=event, context=context)
@@ -71,7 +76,12 @@ def test_fail_request_error_raw(mock_get):
     client = boto3.client("s3", region_name="us-east-1")
     client.create_bucket(Bucket=bucket_name)
 
-    event = {"endpoint": "2025/races", "bucket_name": bucket_name, "layer_name": "raw"}
+    event = {
+        "category": "races",
+        "bucket_name": bucket_name,
+        "layer_name": "raw",
+        "season": 2025,
+    }
     context = {}
 
     response = lambda_handler(event=event, context=context)
@@ -80,3 +90,48 @@ def test_fail_request_error_raw(mock_get):
     assert response["type"] == "APIError"
     assert response["status_code"] == 404
     assert response["endpoint"] == "2025/races"
+
+
+@mock_aws
+@patch("formula_1_etl.utils.get_api.requests.Session.get")
+def test_fail_upload_s3(mock_get):
+    mock_response = MagicMock()
+    mock_response.status_code = 200
+    mock_response.json.return_value = {
+        "MRData": {
+            "xmlns": "",
+            "series": "f1",
+            "url": "https://api.jolpi.ca/ergast/f1/2025/races/",
+            "offset": "0",
+            "total": "1",
+            "RaceTable": {
+                "season": "2025",
+                "Races": [
+                    {
+                        "season": "2025",
+                        "round": "1",
+                        "url": "https://en.wikipedia.org/wiki/2025_Australian_Grand_Prix",
+                        "raceName": "Australian Grand Prix",
+                    }
+                ],
+            },
+        }
+    }
+    mock_get.return_value = mock_response
+
+    bucket_name = "etl-formula-1"
+    boto3.client("s3", region_name="us-east-1")
+
+    event = {
+        "category": "races",
+        "bucket_name": bucket_name,
+        "layer_name": "raw",
+        "season": 2025,
+    }
+    context = {}
+    response = lambda_handler(event=event, context=context)
+
+    assert response["status"] == "error"
+    assert response["type"] == "S3UploadError"
+    assert response["status_code"] == 404
+    assert response["bucket"] == bucket_name
