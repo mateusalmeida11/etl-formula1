@@ -1,4 +1,4 @@
-variable "labmda_role_name" {
+variable "lambda_role_name" {
     description = "Nome da Politica de Execucao Basica de Uma Lambda"
     type = string
     default = "lambda_role_basic_execution_iam"
