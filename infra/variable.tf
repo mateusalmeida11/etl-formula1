@@ -14,3 +14,8 @@ variable "lambda_layer_name" {
     type = string
 
 }
+
+variable "layer_name" {
+    description = "Nome da Camada que Lambda Ira Executar"
+    type = string
+}
