@@ -20,5 +20,6 @@ module "lambda" {
     arn_policy_lambda_execution = module.iam.lambda_execution_role_arn
     command_aws_lambda = var.command_aws_lambda
     lambda_layer_name = var.lambda_layer_name
+    depends_on = [module.ecr]
 
 }
