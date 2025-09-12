@@ -47,11 +47,6 @@ jobs:
                 cd infra &&
                 terraform init
 
-            - name: Terraform Plan (ECR)
-              run: |
-                cd infra &&
-                terraform plan --target=module.ecr
-
             - name: Terraform Apply (ECR)
               run: |
                 cd infra &&
