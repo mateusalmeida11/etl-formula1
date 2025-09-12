@@ -7,7 +7,7 @@ module "s3" {
 }
 
 module "iam" {
-    source = "./modules/policies"
+    source = "./modules/iam"
     bucket_s3_etl_arn = module.s3.root_path_bucket_s3
     aws_lambda_arn= module.lambda.aws_lambda_arn
     layer_name = var.layer_name
