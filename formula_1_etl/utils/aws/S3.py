@@ -13,13 +13,22 @@ class S3UploadError(Exception):
 
 class S3:
     def __init__(self, bucket_name):
-        self.s3_client = boto3.client(
-            "s3",
-            aws_access_key_id=os.environ.get("ACCESS_KEY"),
-            aws_secret_access_key=os.environ.get("SECRET_ACCESS_KEY"),
-            region_name=os.environ.get("REGION"),
-        )
+        self.s3_client = self._create_client()
         self.bucket_name = bucket_name
+
+    def _create_client(self):
+        access_key = os.environ.get("ACCESS_KEY")
+        secret_key = os.environ.get("SECRET_ACCESS_KEY")
+        region = os.environ.get("REGION", "us-east-1")
+        if access_key and secret_key:
+            return boto3.client(
+                "s3",
+                aws_access_key_id=access_key,
+                aws_secret_access_key=secret_key,
+                region_name=region,
+            )
+        else:
+            return boto3.client("s3", region_name=region)
 
     def upload_file(self, data, key):
         try:
