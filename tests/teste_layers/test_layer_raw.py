@@ -1,3 +1,4 @@
+from datetime import datetime
 from unittest.mock import MagicMock, patch
 
 import boto3
@@ -132,12 +133,19 @@ def test_fail_upload_s3(mock_get):
     context = {}
     response = lambda_handler(event=event, context=context)
 
+    today = datetime.today()
+    day = today.day
+    month = today.month
+    year = today.year
+
     assert response["status"] == "error"
     assert response["type"] == "S3UploadError"
     assert response["status_code"] == 404
     assert response["bucket"] == bucket_name
     assert response["message"] == "The specified bucket does not exist"
-    assert response["key"] == "raw/races/year=2025/month=9/day=10/races.json"
+    assert (
+        response["key"] == f"raw/races/year={year}/month={month}/day={day}/races.json"
+    )
 
 
 @mock_aws
