@@ -16,7 +16,7 @@ variable "bucket_s3_etl_arn" {
     type = string
 }
 
-variable "var.layer_name" {
+variable "layer_name" {
     description = "Nome da Camada que Lambda Ira Executar"
     type = string
 }

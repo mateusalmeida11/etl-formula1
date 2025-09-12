@@ -32,7 +32,7 @@ resource "aws_iam_policy" "policy_access_lambda_s3" {
                 Action = [
                     "s3:GetObject",
                     "s3:PutObject",
-                    "s3":DeleteObject
+                    "s3:DeleteObject"
                 ]
                 Effect = "Allow"
                 Resource = "${var.bucket_s3_etl_arn}/${var.layer_name}/*"
