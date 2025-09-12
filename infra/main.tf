@@ -14,9 +14,9 @@ module "iam" {
 
 module "lambda" {
     source = "./modules/lambda"
-    url_repos_etl_marketing=module.ecr.ecr_repository_url
+    ecr_repository_url=module.ecr.ecr_repository_url
     image_tag = var.image_tag
-    arn_policy_lambda_execution = module.iam.lambda_execution_role_arn
+    lambda_execution_role_arn" = module.iam.lambda_execution_role_arn
     command_aws_lambda = var.command_aws_lambda
     lambda_layer_name = var.lambda_layer_name
     depends_on = [module.ecr]
