@@ -41,7 +41,7 @@ resource "aws_iam_policy" "policy_access_lambda_s3" {
     })
 }
 
-resource "aws_iam_role_policy" "attach_permission_s3_acess" {
+resource "aws_iam_role_policy_attachment" "attach_permission_s3_acess" {
     role = aws_iam_role.lambda_role.name
     policy_arn = aws_iam_policy.policy_access_lambda_s3.arn
 }
