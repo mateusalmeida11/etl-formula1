@@ -2,7 +2,7 @@ FROM public.ecr.aws/lambda/python:3.12
 
 WORKDIR /var/task
 
-ENV PYTHONPATH="/var/task/formula_1_etl"
+ENV PYTHONPATH="/var/task"
 
 COPY pyproject.toml poetry.lock ./
 
