@@ -2,7 +2,7 @@ import json
 
 from formula_1_etl.utils.aws.S3 import S3, S3UploadError
 from formula_1_etl.utils.build_endpoint import build_endpoint
-from formula_1_etl.utils.create_name_files import create_root_path
+from formula_1_etl.utils.create_name_files import create_file_name, create_root_path
 from formula_1_etl.utils.get_api import RequestError
 from formula_1_etl.utils.handle_request import handle_requests
 
@@ -16,7 +16,8 @@ def lambda_handler(event, context):
         layer_name = event.get("layer_name")
 
         root_path = create_root_path(layer_name=layer_name, category=category)
-        key = f"{root_path}/{category}.json"
+        file_path = create_file_name(category=category, season=season, rounds=rounds)
+        key = f"{root_path}/{file_path}.json"
         endpoint = build_endpoint(category=category, season=season, rounds=rounds)
 
         data = handle_requests(endpoint=endpoint)
