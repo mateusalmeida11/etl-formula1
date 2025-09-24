@@ -25,3 +25,13 @@ def test_file_name_season():
     result = create_file_name(category=category, season=season)
     expected = f"{category}_{season}"
     assert result == expected
+
+
+def test_file_name_season_rounds():
+    category = "pitstops"
+    season = "2025"
+    rounds = "1"
+    result = create_file_name(category=category, season=season, rounds=rounds)
+    expected = f"{category}_{season}_round_{rounds}"
+
+    assert result == expected
