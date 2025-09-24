@@ -144,7 +144,8 @@ def test_fail_upload_s3(mock_get):
     assert response["bucket"] == bucket_name
     assert response["message"] == "The specified bucket does not exist"
     assert (
-        response["key"] == f"raw/races/year={year}/month={month}/day={day}/races.json"
+        response["key"]
+        == f"raw/races/year={year}/month={month}/day={day}/races_2025.json"
     )
 
 
